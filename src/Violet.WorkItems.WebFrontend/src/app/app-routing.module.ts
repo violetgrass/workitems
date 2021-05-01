@@ -1,17 +1,22 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { WorkItemDetailPageComponent } from './work-item-detail-page/work-item-detail-page.component';
 import { WorkItemListPageComponent } from './work-item-list-page/work-item-list-page.component';
-import { WorkItemPageComponent } from './work-item-page/work-item-page.component';
 
 const routes: Routes = [
   {
-    path: 'wi/:projectCode/new', component: WorkItemPageComponent, data: {
-      "mode": "new"
+    path: 'wi/search', component: WorkItemListPageComponent, data: {
+      "mode": "Search"
     }
   },
   {
-    path: 'wi/:projectCode/:workItemId', component: WorkItemPageComponent, data: {
-      "mode": "edit"
+    path: 'wi/:projectCode/new', component: WorkItemDetailPageComponent, data: {
+      "mode": "Creation"
+    }
+  },
+  {
+    path: 'wi/:projectCode/:workItemId', component: WorkItemDetailPageComponent, data: {
+      "mode": "Editing"
     }
   },
   { path: 'wi/:projectCode', component: WorkItemListPageComponent },
@@ -19,7 +24,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

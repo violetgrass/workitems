@@ -1,18 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { WorkItem } from '../work-item/work-item.service';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { BladeStackComponent } from '../blades/blade-stack.component';
+import { WorkItemListBladeComponent } from '../work-item-list-blade/work-item-list-blade.component';
 
 @Component({
-  selector: 'app-work-item-list-page',
-  templateUrl: './work-item-list-page.component.html',
-  styleUrls: ['./work-item-list-page.component.css']
+  template: `
+    <blade-host>
+      <vwi-work-item-nav></vwi-work-item-nav>
+      <blade-stack #stack></blade-stack>
+    </blade-host>
+  `,
+  styles: []
 })
-export class WorkItemListPageComponent implements OnInit {
-  projectCode: string;
+export class WorkItemListPageComponent implements OnInit, AfterViewInit {
+  @Input() projectCode: string;
+  @Input() mode: "ProjectSearch" | "Search" = "ProjectSearch";
+
+  @ViewChild('stack') stack: BladeStackComponent;
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router) { }
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(pm => {
@@ -20,12 +27,9 @@ export class WorkItemListPageComponent implements OnInit {
     });
   }
 
-  onSelected(workItem: WorkItem): void {
-    this.router.navigate(["wi", workItem.projectCode, workItem.id]);
+  ngAfterViewInit(): void {
+    const componentRef = this.stack.addBladeElementWithContent('project-list-' + this.projectCode, WorkItemListBladeComponent, content => {
+      content.projectCode = this.projectCode;
+    });
   }
-
-  new(): void {
-    this.router.navigate(["wi", this.projectCode, "new"]);
-  }
-
 }
